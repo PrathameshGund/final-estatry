@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Cards from './_components/Cards';
 import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
@@ -8,13 +8,20 @@ function RentPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [location, setLocation] = useState('');
   const [sortBy, setSortBy] = useState('');
+  const [filteredProperties, setFilteredProperties] = useState<any[]>([]);
   const allDocuments = useQuery(api.documents.getAllData, {});
 
-  const filteredProperties = allDocuments?.filter((property: any) => {
-    const matchesSearch = property.property_name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesLocation = !location || property.location.toLowerCase().includes(location.toLowerCase());
-    return matchesSearch && matchesLocation;
-  });
+  // Update filtered properties whenever search criteria or data changes
+  useEffect(() => {
+    if (allDocuments) {
+      const filtered = allDocuments.filter((property: any) => {
+        const matchesSearch = property.property_name.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesLocation = !location || property.location.toLowerCase().includes(location.toLowerCase());
+        return matchesSearch && matchesLocation;
+      });
+      setFilteredProperties(filtered);
+    }
+  }, [allDocuments, searchTerm, location]);
 
   const sortedProperties = [...(filteredProperties || [])].sort((a: any, b: any) => {
     if (sortBy === 'price_asc') return a.price - b.price;
@@ -53,12 +60,14 @@ function RentPage() {
           <button 
             onClick={() => {
               // Trigger search with current filters
-              const filtered = allDocuments?.filter((property: any) => {
-                const matchesSearch = property.property_name.toLowerCase().includes(searchTerm.toLowerCase());
-                const matchesLocation = !location || property.location.toLowerCase().includes(location.toLowerCase());
-                return matchesSearch && matchesLocation;
-              });
-              setFilteredProperties(filtered || []);
+              if (allDocuments) {
+                const filtered = allDocuments.filter((property: any) => {
+                  const matchesSearch = property.property_name.toLowerCase().includes(searchTerm.toLowerCase());
+                  const matchesLocation = !location || property.location.toLowerCase().includes(location.toLowerCase());
+                  return matchesSearch && matchesLocation;
+                });
+                setFilteredProperties(filtered);
+              }
             }}
             className="bg-indigo-600 text-white px-5 py-2 rounded-md hover:bg-indigo-700 transition-colors"
           >
@@ -66,7 +75,7 @@ function RentPage() {
           </button>
         </div>
       </div>
-      <Cards properties={sortedProperties || []} />
+      <Cards properties={sortedProperties} />
     </div>
   );
 }

@@ -244,7 +244,7 @@ export default function PricePrediction() {
   };
 
   const handleNumberInput = (field: string, value: string) => {
-    const num = value === '' ? '' : Number(value);
+    const num = Number(value);
     if (value === '' || (!isNaN(num) && num >= 0)) {
       setFormData(prev => ({ ...prev, [field]: value }));
     }
