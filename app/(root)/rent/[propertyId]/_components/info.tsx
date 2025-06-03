@@ -12,9 +12,10 @@ import logo from "@/public/logo.svg";
 import { DialogDemo } from "./dialogDemo";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 
 type PropertyData = {
-  _id: string;
+  _id: string | Id<"properties">; // Accept either string or Id<"properties">
   property_name: string;
   location: string;
   beds: number;
@@ -87,7 +88,9 @@ const Info = (props: prop) => {
   ];
 
   const handleAppoint = () => {
-    const promise = updateDoc({ id: props.data._id }).then(() => alert("done"));
+    // Cast the string ID to Id<"properties"> type
+    const propertyId = props.data._id as unknown as Id<"properties">;
+    const promise = updateDoc({ id: propertyId }).then(() => alert("Property marked as sold"));
     console.log(promise);
   };
 
