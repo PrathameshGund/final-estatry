@@ -73,22 +73,37 @@ const PropertyPagebyId = ({
   // Ensure all required properties are present with default values if needed
   const headingData: HeadingDataType = {
     _id: propertyData._id,
-    property_name: propertyData.property_name || "Unnamed Property",
-    location: propertyData.location || "Unknown Location",
-    image_url: propertyData.image_url || "/images/property-1.jpg"
+    property_name: propertyData.property_name ?? "Unnamed Property",
+    location: propertyData.location ?? "Unknown Location",
+    image_url: propertyData.image_url ?? "/images/property-1.jpg"
   };
 
   // Cast the data to the expected type for Info component
   const infoData: InfoDataType = {
     ...propertyData,
-    property_name: propertyData.property_name || "Unnamed Property",
-    location: propertyData.location || "Unknown Location",
-    beds: propertyData.beds || 0,
-    bathrooms: propertyData.bathrooms || 0,
-    area_sqm: propertyData.area_sqm || 0,
-    status: propertyData.status || "available",
-    owner: propertyData.owner || "Unknown Owner",
-    property_details: propertyData.property_details || {
+    _id: propertyData._id,
+    property_name: propertyData.property_name ?? "Unnamed Property",
+    location: propertyData.location ?? "Unknown Location",
+    beds: propertyData.beds ?? 0,
+    bathrooms: propertyData.bathrooms ?? 0,
+    area_sqm: propertyData.area_sqm ?? 0,
+    status: propertyData.status ?? "available",
+    owner: propertyData.owner ?? "Unknown Owner",
+    property_details: propertyData.property_details ? {
+      // Ensure all required properties have default values if undefined
+      listed_on: propertyData.property_details.listed_on ?? "Unknown",
+      availability: propertyData.property_details.availability ?? "Unknown",
+      type: propertyData.property_details.type ?? "Unknown",
+      laundry_availability: propertyData.property_details.laundry_availability ?? false,
+      cooling: propertyData.property_details.cooling ?? "Unknown",
+      heating: propertyData.property_details.heating ?? "Unknown",
+      city: propertyData.property_details.city ?? "Unknown",
+      year_built: propertyData.property_details.year_built ?? 0,
+      lot_size_sqm: propertyData.property_details.lot_size_sqm ?? 0,
+      parking_area: propertyData.property_details.parking_area ?? "Unknown",
+      deposit: propertyData.property_details.deposit ?? 0,
+      processing_fees: propertyData.property_details.processing_fees ?? 0
+    } : {
       listed_on: "Unknown",
       availability: "Unknown",
       type: "Unknown",
@@ -102,8 +117,8 @@ const PropertyPagebyId = ({
       deposit: 0,
       processing_fees: 0
     },
-    about: propertyData.about || "No description available",
-    repair_quality: propertyData.repair_quality || "Unknown"
+    about: propertyData.about ?? "No description available",
+    repair_quality: propertyData.repair_quality ?? "Unknown"
   };
 
   return (
